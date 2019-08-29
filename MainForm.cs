@@ -30,6 +30,7 @@ namespace LightsOut
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             lightsOut.NewGame();
+            this.Invalidate();
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -111,6 +112,7 @@ namespace LightsOut
         private void NewGameButton_Click(object sender, EventArgs e)
         {
             lightsOut.NewGame();
+            this.Invalidate();
         }
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
