@@ -14,31 +14,22 @@ namespace LightsOut
     {
         private const int GridOffset = 25;
         private const int GridLength = 200;
-        private const int NumCells = 3;
-        private const int CellLength = GridLength / NumCells;
+        private int NumCells;
+        private int CellLength;
 
-        private bool[,] grid;
-        private Random rand;
-        
+        LightsOutGame lightsOut = new LightsOutGame();
+
         public MainForm()
         {
             InitializeComponent();
-
-            rand = new Random();
-            grid = new bool[NumCells, NumCells];
-
-            for(int r = 0; r<NumCells; r++)
-            {
-                for(int c = 0; c<NumCells; c++)
-                {
-                    grid[r, c] = true;
-                }
-            }
+            NumCells = lightsOut.GridSize;
+            CellLength = GridLength / NumCells;
+    
         }
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NewGameButton_Click(sender, e);
+            lightsOut.NewGame();
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -62,7 +53,7 @@ namespace LightsOut
                     Brush brush;
                     Pen pen;
 
-                    if (grid[r, c])
+                    if (lightsOut.GetGridValue(r,c))
                     {
                         pen = Pens.Black;
                         brush = Brushes.White;
@@ -90,16 +81,11 @@ namespace LightsOut
             int r = (e.Y - GridOffset) / CellLength;
             int c = (e.X - GridOffset) / CellLength;
 
-            for(int i = r-1; i<= r+1; i++)
-            {
-                for (int j = c - 1; j <= c + 1; j++)
-                    if (i >= 0 && i < NumCells && j >= 0 && j < NumCells)
-                        grid[i,j] = !grid[i, j];
-            }
+            lightsOut.Move(r, c);
 
             this.Invalidate();
 
-            if (PlayerWon())
+            if (lightsOut.IsGameOver())
             {
                 MessageBox.Show(this, "Congratulations! You've Won!", "Lights Out!", MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -113,7 +99,7 @@ namespace LightsOut
             {
                 for (int j = 0; j < NumCells; j++)
                 {
-                    if (grid[i, j] == true)
+                    if (lightsOut.GetGridValue(i, j) == true)
                     {
                         return false;
                     }
@@ -124,16 +110,7 @@ namespace LightsOut
 
         private void NewGameButton_Click(object sender, EventArgs e)
         {
-            for(int r = 0; r<NumCells; r++)
-            {
-                for (int c = 0; c < NumCells; c++)
-                {
-                    grid[r, c] = rand.Next(2) == 1;
-
-                    //redraw
-                    this.Invalidate();
-                }
-            }
+            lightsOut.NewGame();
         }
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -159,16 +136,7 @@ namespace LightsOut
 
         private void X3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            rand = new Random();
-            grid = new bool[3, 3];
 
-            for (int r = 0; r < 3; r++)
-            {
-                for (int c = 0; c < 3; c++)
-                {
-                    grid[r, c] = true;
-                }
-            }
         }
 
         private void X4ToolStripMenuItem_Click(object sender, EventArgs e)
